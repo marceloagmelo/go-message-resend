@@ -15,7 +15,7 @@ var api = "go-message/api/v1"
 
 //ListaMensagensPendentes listar mensagens
 func ListaMensagensPendentes() (mensagens models.Mensagens, erro error) {
-	endpoint := variaveis.ApiURL + "/" + api + "/mensagens/status/1"
+	endpoint := variaveis.ApiURL + "/" + api + "/mensagem/status/1"
 
 	resposta, err := GetRequest(endpoint)
 	if err != nil {
