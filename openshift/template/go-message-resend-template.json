@@ -67,9 +67,6 @@
                                 "restartPolicy": "OnFailure",
                                 "terminationGracePeriodSeconds": 30,
                                 "dnsPolicy": "ClusterFirst",
-                                "nodeSelector": {
-                                    "region": "cmpn"
-                                },
                                 "securityContext": {},
                                 "schedulerName": "default-scheduler"
                             }
@@ -88,7 +85,7 @@
             "displayName": "Nome da aplicação",
             "description": "Nome da aplicação",
             "required": true,
-            "value": "go-message-send"
+            "value": "go-message-resend"
         },
         {
             "name": "API_SERVICE_URL",
@@ -101,7 +98,7 @@
             "name": "SCHEDULE",
             "displayName": "Schedule",
             "description": "Schedule",
-            "value": "*/1 * * * *",
+            "value": "*/5 * * * *",
             "required": true
         }
    ],
