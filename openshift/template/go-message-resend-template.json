@@ -1,0 +1,111 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "go-message-resend-template",
+        "annotations": {
+            "description": "Template para deploy da aplicação Message Resend",
+            "iconClass": "icon-go-gopher",
+            "openshift.io/display-name": "Aplicação Message Resend",
+            "openshift.io/documentation-url": "https://github.com/marceloagmelo/go-message-resend.git",
+            "tags": "runtime,instant-app,golang"
+        }
+    },
+    "objects": [
+        {
+            "kind": "CronJob",
+            "apiVersion": "batch/v1beta1",
+            "metadata": {
+                "name": "${APP_NAME}"
+            },
+            "spec": {
+                "schedule": "${SCHEDULE}",
+                "concurrencyPolicy": "Forbid",
+                "suspend": false,
+                "jobTemplate": {
+                    "spec": {
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "parent": "${APP_NAME}"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "${APP_NAME}",
+                                        "image": "marceloagmelo/go-message-resend",
+                                        "env": [
+                                            {
+                                                "name": "APP_NAME",
+                                                "value": "${APP_NAME}"
+                                            },
+                                            {
+                                                "name": "PROJECT_NAME",
+                                                "valueFrom": {
+                                                    "fieldRef": {
+                                                        "fieldPath": "metadata.namespace"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "name": "TZ",
+                                                "value": "America/Sao_Paulo"
+                                            },
+                                            {
+                                                "name": "API_SERVICE_URL",
+                                                "value": "${API_SERVICE_URL}"
+                                            }
+                                        ],
+                                        "resources": {},
+                                        "terminationMessagePath": "/dev/termination-log",
+                                        "terminationMessagePolicy": "File",
+                                        "imagePullPolicy": "Always",
+                                        "securityContext": {}
+                                    }
+                                ],
+                                "restartPolicy": "OnFailure",
+                                "terminationGracePeriodSeconds": 30,
+                                "dnsPolicy": "ClusterFirst",
+                                "nodeSelector": {
+                                    "region": "cmpn"
+                                },
+                                "securityContext": {},
+                                "schedulerName": "default-scheduler"
+                            }
+                        }
+                    }
+                },
+                "successfulJobsHistoryLimit": 3,
+                "failedJobsHistoryLimit": 1
+            },
+            "status": {}
+        }
+    ],
+    "parameters": [
+        {
+            "name": "APP_NAME",
+            "displayName": "Nome da aplicação",
+            "description": "Nome da aplicação",
+            "required": true,
+            "value": "go-message-send"
+        },
+        {
+            "name": "API_SERVICE_URL",
+            "displayName": "Nome do serviço de mensagem",
+            "description": "Nome do serviço de mensagem",
+            "value": "http://go-message-api:8080",
+            "required": true
+        },
+        {
+            "name": "SCHEDULE",
+            "displayName": "Schedule",
+            "description": "Schedule",
+            "value": "*/1 * * * *",
+            "required": true
+        }
+   ],
+    "labels": {
+        "template": "go-backup-openshift-template"
+    }
+}
